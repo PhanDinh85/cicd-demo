@@ -25,4 +25,16 @@ app.get("/add/:a/:b", (req, res) => {
   res.json({ result: a + b });
 });
 
+// Route nhân hai số
+app.get("/multiply/:a/:b", (req, res) => {
+  const a = Number(req.params.a);
+  const b = Number(req.params.b);
+
+  if (isNaN(a) || isNaN(b)) {
+    return res.status(400).json({ error: "Tham số phải là số" });
+  }
+
+  res.json({ result: a * b });
+});
+
 module.exports = app;

@@ -40,3 +40,11 @@ describe("GET /add/:a/:b", () => {
     expect(res.body.error).toBeDefined();
   });
 });
+
+describe("GET /multiply/:a/:b", () => {
+  test("3 * 4 phải bằng 12", async () => {
+    const res = await request(app).get("/multiply/3/4");
+    expect(res.statusCode).toBe(200);
+    expect(res.body.result).toBe(12);
+  });
+});
