@@ -1,0 +1,67 @@
+# ══════════════════════════════════════════════════════
+# CD — Continuous Deployment
+# Chỉ chạy khi CI đã pass và code được merge vào main
+# Mục tiêu: tự động deploy lên môi trường production
+# ══════════════════════════════════════════════════════
+
+name: CD — Deploy lên Production
+
+# ── Khi nào trigger? ──────────────────────────────────
+on:
+  push:
+    branches: [main]             # chỉ deploy khi merge vào main
+  workflow_run:
+    workflows: ["CI — Kiểm tra code"]
+    types: [completed]           # đợi CI xong mới chạy
+
+# ── Các job sẽ chạy ───────────────────────────────────
+jobs:
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    # Chỉ deploy khi CI đã thành công
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'push' }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Cài Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: "npm"
+
+      - name: 📦 Cài dependencies (production only)
+        run: npm install --production
+
+      # ── Bước build (nếu cần) ──────────────────────
+      # Với Express đơn giản thì không cần build,
+      # nhưng với React/TypeScript thì sẽ có bước này
+      - name: 🏗️ Build
+        run: echo "App này không cần build step. Với React/TS sẽ chạy: npm run build"
+
+      # ── Bước deploy thực tế ───────────────────────
+      # Hiện tại chỉ simulate để học.
+      # Khi dùng thật, thay bằng 1 trong các option bên dưới.
+      - name: 🚀 Deploy
+        run: |
+          echo "======================================"
+          echo "✅ DEPLOY THÀNH CÔNG!"
+          echo "======================================"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Commit: ${{ github.sha }}"
+          echo "Người deploy: ${{ github.actor }}"
+          echo "Thời gian: $(date)"
+          echo "======================================"
+          echo ""
+          echo "📌 Để deploy thật, thay bước này bằng:"
+          echo "  - Railway:  railway up"
+          echo "  - Vercel:   vercel --prod"
+          echo "  - VPS:      ssh user@server 'cd /app && git pull && pm2 restart all'"
+
+      # ── Thông báo kết quả ─────────────────────────
+      - name: 📣 Thông báo deploy xong
+        run: echo "Deploy hoàn tất lúc $(date '+%H:%M:%S %d/%m/%Y')"
