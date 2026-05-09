@@ -5,7 +5,8 @@ app.use(express.json());
 
 // Route gốc
 app.get("/", (req, res) => {
-res.json({ message: "Tôi vừa sửa!", status: "ok" });});
+  res.json({ message: "Hello from CI/CD Demo!", status: "ok" });
+});
 
 // Route health check — CI/CD thường dùng cái này để kiểm tra app còn sống không
 app.get("/health", (req, res) => {
