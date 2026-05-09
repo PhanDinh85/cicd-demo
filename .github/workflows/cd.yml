@@ -41,7 +41,7 @@ jobs:
       # Với Express đơn giản thì không cần build,
       # nhưng với React/TypeScript thì sẽ có bước này
       - name: 🏗️ Build
-        run: echo "App này không cần build step. Với React/TS sẽ chạy: npm run build"
+        run: echo 'App này không cần build step. Với React/TS sẽ chạy npm run build'
 
       # ── Bước deploy thực tế ───────────────────────
       # Hiện tại chỉ simulate để học.
